@@ -1,0 +1,90 @@
+:root{
+  --screen-md: 768px;
+  --screen-lg: 1024px;
+  --screen-xl: 1536px;
+}
+
+*,
+html {
+  margin: 0;
+  padding: 0;
+  font-size: 10px;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+}
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #000;
+  padding: 0.8rem 1rem;
+}
+
+.header .logo-text {
+  font-size: 2.8rem;
+  color: rgb(58, 234, 58);
+}
+
+.nav{
+  display: flex;
+  gap: 1.8rem;
+  align-items: center;
+  color: #fff;
+}
+
+.nav-link {
+  font-size: 1.6rem;
+  text-decoration: none;
+  color: #fff;
+}
+
+.user__info{
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.user__info .username{
+  font-size: 1.6rem;
+}
+
+/* Avatar */
+
+.avatar{
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #000;
+
+}
+.avatar.base{
+  width: 3.2rem;
+  height: 3.2rem;
+}
+
+.avatar.lg{
+  width: 6.4rem;
+  height: 6.4rem;
+}
+.avatar.base > .avatar__text{
+  font-size: 1.6rem;
+}
+
+.avatar.lg > .avatar__text{
+  font-size: 3.2rem;
+
+}
+/* Profile */
+.profile__container{
+  width: min( var(--screen-lg), 100%);
+  margin-inline: auto;
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.profile__container > .username{
+  font-size: 2.4rem;
+}
