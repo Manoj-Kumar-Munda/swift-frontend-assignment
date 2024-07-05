@@ -4,29 +4,28 @@ import { UserContext } from "../context/UserContext";
 import Avatar from "./Avatar";
 
 const Header = () => {
-  const { user, setUser } = useContext(UserContext);
+  const { user } = useContext(UserContext);
 
-  if (!user) {
-    setUser();
-  }
   return (
-    <header className="header">
-      <h1 className="logo-text">Swift</h1>
+    <header className="bg-black ">
+      <div className="h-14 mx-auto max-w-screen-xl w-full flex justify-between items-center">
+        <h1 className="text-green-500 font-bold text-xl">Swift</h1>
 
-      <nav className="nav">
-        {user && (
-          <div className="user__info">
-            <Avatar name={user?.name} size="base" bgColor="#fff" />
-            <span className="username">{user.name.split(" ")[0]}</span>
-          </div>
-        )}
+        <nav className="flex items-center gap-6">
+          {user && (
+            <div className="flex gap-2 items-center">
+              <Avatar name={user?.name} className=""/>
+              <span className="text-white">{user.name.split(" ")[0]}</span>
+            </div>
+          )}
 
-        <span>
-          <Link className="nav-link" to={"/dashboard"}>
-            Dashboard
-          </Link>
-        </span>
-      </nav>
+          {/* <span>
+            <Link className="text-white" to={"/dashboard"}>
+              Dashboard
+            </Link>
+          </span> */}
+        </nav>
+      </div>
     </header>
   );
 };
