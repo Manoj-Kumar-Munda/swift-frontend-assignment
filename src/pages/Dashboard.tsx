@@ -1,8 +1,6 @@
-import { useEffect } from "react";
 import SortBtn from "../components/SortBtn";
 import { useComments } from "../hooks/useComments";
 import { PiCaretUpDownLight } from "react-icons/pi";
-import useLocalStorage from "../context/useLocalStorage";
 import DashboardTable from "../components/DashboardTable";
 
 export const sortOrderType: string[] = ["none", "asc", "desc"];
@@ -15,29 +13,11 @@ type sortType = {
 
 const Dashboard = () => {
   const { modifiedComments, isLoading, setSortBy } = useComments();
-
-
-  console.log(modifiedComments);
   
-
-  // const [sortBy, setSortBy] = useLocalStorage<sortType>("sortBy", {
-  //   sortBy: "name",
-  //   order: 0,
-  // });
-
-  // useEffect(() => {
-  //   console.log("sort");
-    
-  //   if (comments) {
-  //     sortComments(comments, sortBy?.sortBy, sortOrderType[sortBy?.order]);
-  //   }
-  // }, [sortBy]);
-
   if (isLoading) {
     return <h1>Loading...</h1>;
   }
 
-  // console.log(sortBy);
 
   return (
     <div className="max-w-screen-xl mx-auto mt-4">
