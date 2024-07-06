@@ -4,9 +4,6 @@ interface ProfileGridItemProps {
 }
 
 const ProfileGridItem = ({ label, data }: ProfileGridItemProps) => {
-  console.log(label);
-  console.log(data);
-  
   return (
     <div className=" flex flex-col gap-2">
       <span className="text-gray-500">{label}</span>

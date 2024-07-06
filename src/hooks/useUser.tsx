@@ -1,26 +1,25 @@
 import { useEffect, useState } from "react";
-import { User } from "../context/UserContext";
 import { getAddress } from "../helpers/getAddress";
 
-export const useUser = () => {
-  const [user, setUser] = useState<User | null>(null);
+export const useUser = <T,>(url: string, api: string) => {
+  const [data, setData] = useState<T | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   const updateUser = async () => {
     try {
-      const data = await fetch(
-        "https://jsonplaceholder.typicode.com/users"
-      ).then((res) => res.json());
+      let data = await fetch(url).then((res) => res.json());
 
-      const user = {
-        id: data[0]?.id,
-        name: data[0]?.name,
-        username: data[0]?.username,
-        email: data[0]?.email,
-        address: getAddress(data[0]?.address),
-        phone: data[0]?.phone,
-      };
-      setUser(user);
+      if (api === "user") {
+        data = {
+          id: data[0]?.id,
+          name: data[0]?.name,
+          username: data[0]?.username,
+          email: data[0]?.email,
+          address: getAddress(data[0]?.address),
+          phone: data[0]?.phone,
+        };
+      }
+      setData(data);
       setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
@@ -29,10 +28,10 @@ export const useUser = () => {
 
   useEffect(() => {
     updateUser();
-  }, []);
+  }, [url]);
 
   return {
-    user,
+    data,
     isLoading,
   };
 };
