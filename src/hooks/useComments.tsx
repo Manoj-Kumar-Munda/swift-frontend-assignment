@@ -17,9 +17,30 @@ export interface IComment {
   body: string;
 }
 
+const searchItems = (data: IComment[], searchText: string) => {
+
+  const searchByName = data.filter((item) =>
+    item?.name?.toLowerCase().includes(searchText.toLowerCase())
+  );
+  const searchByEmail = data.filter((item) =>
+    item?.email?.toLowerCase().includes(searchText.toLowerCase())
+  );
+
+  let res;
+  if( searchByName.length > 0){
+    res = searchByName;
+  } else if(searchByEmail.length > 0){
+    res = searchByEmail;
+  }
+
+  return res;
+};
+
 export const useComments = () => {
   const [comments, setComments] = useState<IComment[] | null>(null);
-  const [ modifiedComments, setModifiedComments] = useState<IComment[] | null>(null);
+  const [modifiedComments, setModifiedComments] = useState<IComment[] | null>(
+    null
+  );
   const [isLoading, setIsLoading] = useState(true);
 
   const sortComments = (
@@ -41,7 +62,6 @@ export const useComments = () => {
         } else return b[sortBy].localeCompare(a[sortBy]);
       }
     });
-
     return res;
   };
 
@@ -50,18 +70,22 @@ export const useComments = () => {
     order: 0,
   });
 
+  const [search, setSearch] = useLocalStorage<string>("search", "");
+
   const fetchComments = async () => {
     try {
       const data = await fetch(
         "https://jsonplaceholder.typicode.com/comments"
       ).then((res) => res.json());
-      
-      
+
       setComments(data);
-      const sortedData = sortComments(data, sortBy.sortBy, sortOrderType[sortBy.order]);
-      console.log(sortedData);
+      const sortedData = sortComments(
+        data,
+        sortBy.sortBy,
+        sortOrderType[sortBy.order]
+      );
       setModifiedComments(sortedData);
-      
+
       setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
@@ -73,9 +97,24 @@ export const useComments = () => {
   }, []);
 
   useEffect(() => {
-    console.log("sort");
     if (comments) {
-      const data = sortComments(comments, sortBy?.sortBy, sortOrderType[sortBy?.order]);
+      if (search === "") {
+        setModifiedComments(comments);
+        return;
+      }
+      const data = searchItems(comments, search) || [];
+    
+      setModifiedComments(data);
+    }
+  }, [search]);
+
+  useEffect(() => {
+    if (comments) {
+      const data = sortComments(
+        comments,
+        sortBy?.sortBy,
+        sortOrderType[sortBy?.order]
+      );
       setModifiedComments(data);
     }
   }, [sortBy]);
@@ -84,5 +123,7 @@ export const useComments = () => {
     modifiedComments,
     isLoading,
     setSortBy,
+    setSearch,
+    search,
   };
 };

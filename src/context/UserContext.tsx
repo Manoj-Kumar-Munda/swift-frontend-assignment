@@ -1,19 +1,10 @@
 import { createContext, ReactNode } from "react";
 import { useUser } from "../hooks/useUser";
+import { User } from "../types/user";
 
 export interface ContextProviderProps {
   children: ReactNode;
 }
-
-export interface User {
-  id: number;
-  name: string;
-  username: string;
-  email: string;
-  address: string;
-  phone: string;
-}
-
 interface UserContextTypes {
   user: User | null;
   isLoading: boolean;

@@ -8,8 +8,6 @@ interface IPagination {
 }
 
 const DashboardTable = ({ comments }: { comments: IComment[] }) => {
-  console.log(comments);
-
   const [pagination, setPagination] = useLocalStorage<IPagination>(
     "pagination",
     {
@@ -19,23 +17,18 @@ const DashboardTable = ({ comments }: { comments: IComment[] }) => {
   );
 
   const [filteredComments, setFilteredComments] = useState(comments);
-
-
   useEffect(() => {
     if (
-      pagination.pageNumber <= 0 ||
-      pagination.pageNumber >= Math.floor(comments.length / pagination.pageSize)
+      pagination.pageNumber <= 0
     ) {
       return;
     }
-
-    console.log("rendered");
 
     const data = comments.slice(
       pagination.pageNumber * pagination.pageSize - pagination.pageSize,
       pagination.pageNumber * pagination.pageSize
     );
-    console.log(data);
+
     setFilteredComments(data);
   }, [pagination, comments]);
 
@@ -63,10 +56,10 @@ const DashboardTable = ({ comments }: { comments: IComment[] }) => {
             {filteredComments &&
               filteredComments.map((item) => (
                 <tr key={item?.id} className="border">
-                  <td className="text-nowrap text-center">{item?.postId}</td>
-                  <td className="line-clamp-1">{item?.name}</td>
-                  <td>{item?.email}</td>
-                  <td className="overflow-hidden line-clamp-1">{item?.body}</td>
+                  <td className="py-1 text-nowrap text-center">{item?.postId}</td>
+                  <td className="py-1 line-clamp-1">{item?.name}</td>
+                  <td className="py-1">{item?.email}</td>
+                  <td className="py-1 overflow-hidden line-clamp-1">{item?.body}</td>
                 </tr>
               ))}
           </tbody>

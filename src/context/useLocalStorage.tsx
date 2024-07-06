@@ -1,11 +1,4 @@
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { SortOption } from "../pages/Dashboard";
-
-type defaultValueType = {
-  sortBy: SortOption;
-  order: number;
-};
-// type defaultValueType = string | number | defaultValueType;
 
 const useLocalStorage = <T,>(
   key: string,
@@ -26,7 +19,6 @@ const useLocalStorage = <T,>(
     }
   });
 
-  console.log(value);
 
   useEffect(() => {
     const rawValue = JSON.stringify(value);

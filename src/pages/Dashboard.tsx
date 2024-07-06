@@ -1,10 +1,7 @@
 import SortBtn from "../components/SortBtn";
-import { useComments } from "../hooks/useComments";
+import { SortOption, sortOrderType, useComments } from "../hooks/useComments";
 import { PiCaretUpDownLight } from "react-icons/pi";
 import DashboardTable from "../components/DashboardTable";
-
-export const sortOrderType: string[] = ["none", "asc", "desc"];
-export type SortOption = "name" | "postId" | "email";
 
 type sortType = {
   sortBy: SortOption;
@@ -12,19 +9,18 @@ type sortType = {
 };
 
 const Dashboard = () => {
-  const { modifiedComments, isLoading, setSortBy } = useComments();
-  
+  const { modifiedComments, isLoading, setSortBy, setSearch, search } = useComments();
+
   if (isLoading) {
     return <h1>Loading...</h1>;
   }
 
-
   return (
-    <div className="max-w-screen-xl mx-auto mt-4">
+    <div className="max-w-screen-xl mx-auto mt-4 px-2">
       <h1 className="font-medium text-2xl">Dashboard</h1>
 
       <div className="mt-4 space-y-2">
-        <div className="flex justify-between">
+        <div className="flex justify-between flex-wrap gap-2 nd:gap-0">
           <div className="flex gap-2">
             <SortBtn
               onClick={() => {
@@ -73,6 +69,17 @@ const Dashboard = () => {
               <span>Sort Email</span>
               <PiCaretUpDownLight />
             </SortBtn>
+          </div>
+
+          <div className="">
+            <input
+              type="text"
+              value={search}
+              placeholder="Search name and email"
+              className="w-80 border shadow-lg outline-none px-2 py-1 rounded-md"
+              onChange={(e) => setSearch(e.target.value)}
+
+            />
           </div>
         </div>
 
