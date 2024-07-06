@@ -1,39 +1,11 @@
 import { useEffect, useState } from "react";
-
 import useLocalStorage from "../context/useLocalStorage";
-
-export const sortOrderType: string[] = ["none", "asc", "desc"];
-export type SortOption = "name" | "postId" | "email";
+import { IComment, SortOption, sortOrderType } from "../types/comments";
+import { searchItems } from "../helpers/helpers";
 
 type sortType = {
   sortBy: SortOption;
   order: number;
-};
-export interface IComment {
-  postId: number;
-  id: number;
-  name: string;
-  email: string;
-  body: string;
-}
-
-const searchItems = (data: IComment[], searchText: string) => {
-
-  const searchByName = data.filter((item) =>
-    item?.name?.toLowerCase().includes(searchText.toLowerCase())
-  );
-  const searchByEmail = data.filter((item) =>
-    item?.email?.toLowerCase().includes(searchText.toLowerCase())
-  );
-
-  let res;
-  if( searchByName.length > 0){
-    res = searchByName;
-  } else if(searchByEmail.length > 0){
-    res = searchByEmail;
-  }
-
-  return res;
 };
 
 export const useComments = () => {
@@ -103,7 +75,7 @@ export const useComments = () => {
         return;
       }
       const data = searchItems(comments, search) || [];
-    
+
       setModifiedComments(data);
     }
   }, [search]);

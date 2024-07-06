@@ -1,7 +1,8 @@
 import SortBtn from "../components/SortBtn";
-import { SortOption, sortOrderType, useComments } from "../hooks/useComments";
+import {  useComments } from "../hooks/useComments";
 import { PiCaretUpDownLight } from "react-icons/pi";
 import DashboardTable from "../components/DashboardTable";
+import { SortOption, sortOrderType } from "../types/comments";
 
 type sortType = {
   sortBy: SortOption;
@@ -14,6 +15,9 @@ const Dashboard = () => {
   if (isLoading) {
     return <h1>Loading...</h1>;
   }
+
+  console.log(modifiedComments);
+  
 
   return (
     <div className="max-w-screen-xl mx-auto mt-4 px-2">

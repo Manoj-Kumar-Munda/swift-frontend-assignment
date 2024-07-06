@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
-import { IComment } from "../hooks/useComments";
 import useLocalStorage from "../context/useLocalStorage";
-
+import { IComment } from "../types/comments";
 interface IPagination {
   pageNumber: number;
   pageSize: number;
 }
 
 const DashboardTable = ({ comments }: { comments: IComment[] }) => {
+  console.log(comments);
+  
   const [pagination, setPagination] = useLocalStorage<IPagination>(
     "pagination",
     {

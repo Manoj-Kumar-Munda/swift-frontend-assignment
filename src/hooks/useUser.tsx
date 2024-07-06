@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getAddress } from "../helpers/getAddress";
+import { getAddress } from "../helpers/helpers";
 
 export const useUser = <T,>(url: string, api: string) => {
   const [data, setData] = useState<T | null>(null);
