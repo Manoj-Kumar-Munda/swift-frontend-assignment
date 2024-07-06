@@ -7,8 +7,6 @@ interface IPagination {
 }
 
 const DashboardTable = ({ comments }: { comments: IComment[] }) => {
-  console.log(comments);
-  
   const [pagination, setPagination] = useLocalStorage<IPagination>(
     "pagination",
     {
