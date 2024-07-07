@@ -1,12 +1,17 @@
 import { useEffect, useState } from "react";
 import useLocalStorage from "../context/useLocalStorage";
 import { IComment } from "../types/comments";
+import { useSearchParams } from "react-router-dom";
 interface IPagination {
   pageNumber: number;
   pageSize: number;
 }
 
 const DashboardTable = ({ comments }: { comments: IComment[] }) => {
+
+  const [searchParams, setSearchParams] = useSearchParams();
+  console.log( searchParams.get("page"));
+  
   const [pagination, setPagination] = useLocalStorage<IPagination>(
     "pagination",
     {
