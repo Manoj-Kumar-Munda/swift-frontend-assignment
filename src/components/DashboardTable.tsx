@@ -1,40 +1,22 @@
-import { useEffect, useState } from "react";
-import useLocalStorage from "../context/useLocalStorage";
 import { IComment } from "../types/comments";
-import { useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 interface IPagination {
   pageNumber: number;
   pageSize: number;
 }
 
 const DashboardTable = ({ comments }: { comments: IComment[] }) => {
+  const navigate = useNavigate();
+  // console.log(navigate.);
 
-  const [searchParams, setSearchParams] = useSearchParams();
-  console.log( searchParams.get("page"));
+  const [searchParams] = useSearchParams();
+  console.log(searchParams);
   
-  const [pagination, setPagination] = useLocalStorage<IPagination>(
-    "pagination",
-    {
-      pageNumber: 1,
-      pageSize: 10,
-    }
-  );
+  let pageNumber = searchParams.get("page") || "1";
+  let pageSize = searchParams.get("limit") || "10";
+  console.log(searchParams.get("page"));
 
-  const [filteredComments, setFilteredComments] = useState(comments);
-  useEffect(() => {
-    if (
-      pagination.pageNumber <= 0
-    ) {
-      return;
-    }
 
-    const data = comments.slice(
-      pagination.pageNumber * pagination.pageSize - pagination.pageSize,
-      pagination.pageNumber * pagination.pageSize
-    );
-
-    setFilteredComments(data);
-  }, [pagination, comments]);
 
   return (
     <div>
@@ -57,15 +39,21 @@ const DashboardTable = ({ comments }: { comments: IComment[] }) => {
             </tr>
           </thead>
           <tbody className="">
-            {filteredComments &&
-              filteredComments.map((item) => (
-                <tr key={item?.id} className="border">
-                  <td className="py-1 text-nowrap text-center">{item?.postId}</td>
-                  <td className="py-1 line-clamp-1">{item?.name}</td>
-                  <td className="py-1">{item?.email}</td>
-                  <td className="py-1 overflow-hidden line-clamp-1">{item?.body}</td>
-                </tr>
-              ))}
+            {comments &&
+              comments
+                .slice((+pageNumber - 1) * +pageSize, +pageNumber * +pageSize)
+                .map((item) => (
+                  <tr key={item?.id} className="border">
+                    <td className="py-1 text-nowrap text-center">
+                      {item?.postId}
+                    </td>
+                    <td className="py-1 line-clamp-1">{item?.name}</td>
+                    <td className="py-1">{item?.email}</td>
+                    <td className="py-1 overflow-hidden line-clamp-1">
+                      {item?.body}
+                    </td>
+                  </tr>
+                ))}
           </tbody>
         </table>
       </div>
@@ -76,11 +64,10 @@ const DashboardTable = ({ comments }: { comments: IComment[] }) => {
             className="border rounded-md text-sm p-1"
             name="pageSize"
             id="pageSize"
-            value={pagination.pageSize}
+            value={+pageSize}
             onChange={(e) =>
-              setPagination((prev) => {
-                return { ...prev, pageSize: +e.target.value };
-              })
+              navigate(`?page=${pageNumber}&limit=${e.target.value}`)
+
             }
           >
             <option value="10">10 / page</option>
@@ -90,23 +77,24 @@ const DashboardTable = ({ comments }: { comments: IComment[] }) => {
         </div>
         <div className="flex gap-2 items-center  ">
           <span className="text-xs">
-            {` Showing ${pagination.pageNumber} - ${
-              pagination.pageNumber * pagination.pageSize
-            } of ${comments.length}`}
+            {` Showing ${+pageNumber} - ${+pageNumber * +pageSize} of ${
+              comments.length
+            }`}
           </span>
-          <div className="flex items-center gap-2">
-            <span className="text-xs">Jump to page</span>
-            <input
-              type="text"
-              className="border w-6 text-center text-sm"
-              defaultValue={1}
-              value={pagination.pageNumber.toString()}
-              onChange={(e) =>
-                setPagination((prev) => {
-                  return { ...prev, pageNumber: +e.target.value };
-                })
-              }
-            />
+
+          <div className="flex">
+            {comments &&
+              new Array(comments.length / +pageSize)
+                .fill(0)
+                .map((_, index) => (
+                  <Link
+                    key={index}
+                    to={`?page=${index+1}&limit=${pageSize}`}
+                    className="py-2 px-1"
+                  >
+                    {index + 1}
+                  </Link>
+                ))}
           </div>
         </div>
       </div>
