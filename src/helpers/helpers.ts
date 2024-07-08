@@ -20,11 +20,17 @@ export const searchItems = (data: IComment[], searchText: string) => {
     item?.email?.toLowerCase().includes(searchText.toLowerCase())
   );
 
+  if (searchText === "") {
+    return data;
+  }
+
   let res;
   if (searchByName.length > 0) {
     res = searchByName;
   } else if (searchByEmail.length > 0) {
     res = searchByEmail;
+  } else {
+    return [];
   }
 
   return res;
