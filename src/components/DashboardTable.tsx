@@ -1,22 +1,33 @@
+import { useEffect, useState } from "react";
 import { IComment } from "../types/comments";
-import { Link, useNavigate, useSearchParams } from "react-router-dom";
-interface IPagination {
-  pageNumber: number;
-  pageSize: number;
-}
+import { useSearchParams } from "react-router-dom";
+import { sort } from "../helpers/helpers";
 
 const DashboardTable = ({ comments }: { comments: IComment[] }) => {
-  const navigate = useNavigate();
-  // console.log(navigate.);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [filteredComments, setFilteredComments] = useState(comments);
+  const [pageNumber, setPageNumber] = useState("1");
+  const [pageSize, setPageSize] = useState("10");
+  const [sortComments, setSortComments] = useState({
+    sortBy: "",
+    order: "",
+  });
 
-  const [searchParams] = useSearchParams();
-  console.log(searchParams);
-  
-  let pageNumber = searchParams.get("page") || "1";
-  let pageSize = searchParams.get("limit") || "10";
-  console.log(searchParams.get("page"));
+  useEffect(() => {
+    setPageNumber(searchParams.get("page") || "1");
+    setPageSize(searchParams.get("limit") || "10");
+    setSortComments(() => {
+      return {
+        sortBy: searchParams.get("sortBy") || "",
+        order: searchParams.get("order") || "",
+      };
+    });
+  }, [searchParams]);
 
-
+  useEffect(() => {
+    const res = sort(comments, sortComments) || comments;
+    setFilteredComments(res);
+  }, [sortComments]);
 
   return (
     <div>
@@ -39,8 +50,8 @@ const DashboardTable = ({ comments }: { comments: IComment[] }) => {
             </tr>
           </thead>
           <tbody className="">
-            {comments &&
-              comments
+            {filteredComments &&
+              filteredComments
                 .slice((+pageNumber - 1) * +pageSize, +pageNumber * +pageSize)
                 .map((item) => (
                   <tr key={item?.id} className="border">
@@ -65,10 +76,10 @@ const DashboardTable = ({ comments }: { comments: IComment[] }) => {
             name="pageSize"
             id="pageSize"
             value={+pageSize}
-            onChange={(e) =>
-              navigate(`?page=${pageNumber}&limit=${e.target.value}`)
-
-            }
+            onChange={(e) => {
+              searchParams.set("limit", `${e.target.value}`);
+              setSearchParams(searchParams);
+            }}
           >
             <option value="10">10 / page</option>
             <option value="50">50 / page</option>
@@ -83,18 +94,19 @@ const DashboardTable = ({ comments }: { comments: IComment[] }) => {
           </span>
 
           <div className="flex">
-            {comments &&
-              new Array(comments.length / +pageSize)
-                .fill(0)
-                .map((_, index) => (
-                  <Link
-                    key={index}
-                    to={`?page=${index+1}&limit=${pageSize}`}
-                    className="py-2 px-1"
-                  >
-                    {index + 1}
-                  </Link>
-                ))}
+            {filteredComments &&
+              new Array(filteredComments.length / +pageSize).fill(0).map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => {
+                    searchParams.set("page", `${index + 1}`);
+                    setSearchParams(searchParams);
+                  }}
+                  className="py-2 px-1"
+                >
+                  {index + 1}
+                </button>
+              ))}
           </div>
         </div>
       </div>

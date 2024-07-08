@@ -1,23 +1,36 @@
 import SortBtn from "../components/SortBtn";
-import {  useComments } from "../hooks/useComments";
+import { useComments } from "../hooks/useComments";
 import { PiCaretUpDownLight } from "react-icons/pi";
 import DashboardTable from "../components/DashboardTable";
-import { SortOption, sortOrderType } from "../types/comments";
-
-type sortType = {
-  sortBy: SortOption;
-  order: number;
-};
+import { useSearchParams } from "react-router-dom";
+import { useState } from "react";
 
 const Dashboard = () => {
-  const { modifiedComments, isLoading, setSortBy, setSearch, search } = useComments();
+  const { comments, isLoading } = useComments();
 
-  if (isLoading) {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [search, setSearch] = useState("");
+
+  console.log(searchParams);
+
+  const setSortParams = (sortBy: string) => {
+    searchParams.set("sortBy", sortBy);
+    if (searchParams.has("sortBy")) {
+      if (!searchParams.get("order")) {
+        searchParams.set("order", "asc");
+      } else if (searchParams.get("order") === "asc") {
+        searchParams.set("order", "desc");
+      } else if (searchParams.get("order") === "desc") {
+        searchParams.delete("order");
+        searchParams.delete("sortBy");
+      }
+    }
+    setSearchParams(searchParams);
+  };
+
+  if (isLoading || !comments) {
     return <h1>Loading...</h1>;
   }
-
-  console.log(modifiedComments);
-  
 
   return (
     <div className="max-w-screen-xl mx-auto mt-4 px-2">
@@ -26,7 +39,12 @@ const Dashboard = () => {
       <div className="mt-4 space-y-2">
         <div className="flex justify-between flex-wrap gap-2 nd:gap-0">
           <div className="flex gap-2">
-            <SortBtn
+            <SortBtn onClick={() => setSortParams("postId")}>
+              <span>Sort Post ID</span>
+              <PiCaretUpDownLight />
+            </SortBtn>
+
+            {/* <SortBtn
               onClick={() => {
                 setSortBy((prev: sortType) => {
                   if (prev.sortBy !== "postId") {
@@ -40,36 +58,14 @@ const Dashboard = () => {
             >
               <span>Sort Post ID</span>
               <PiCaretUpDownLight />
-            </SortBtn>
+            </SortBtn> */}
 
-            <SortBtn
-              onClick={() => {
-                setSortBy((prev: sortType) => {
-                  if (prev.sortBy !== "name") {
-                    return { sortBy: "name", order: 0 };
-                  }
-                  if (prev.order < sortOrderType.length - 1) {
-                    return { sortBy: "name", order: prev.order + 1 };
-                  } else return { ...prev, order: 0 };
-                });
-              }}
-            >
+            <SortBtn onClick={() => setSortParams("name")}>
               <span>Sort Name</span>
               <PiCaretUpDownLight />
             </SortBtn>
 
-            <SortBtn
-              onClick={() => {
-                setSortBy((prev: sortType) => {
-                  if (prev.sortBy !== "email") {
-                    return { sortBy: "email", order: 0 };
-                  }
-                  if (prev.order < sortOrderType.length - 1) {
-                    return { sortBy: "email", order: prev.order + 1 };
-                  } else return { ...prev, order: 0 };
-                });
-              }}
-            >
+            <SortBtn onClick={() => setSortParams("email")}>
               <span>Sort Email</span>
               <PiCaretUpDownLight />
             </SortBtn>
@@ -82,13 +78,12 @@ const Dashboard = () => {
               placeholder="Search name and email"
               className="w-80 border shadow-lg outline-none px-2 py-1 rounded-md"
               onChange={(e) => setSearch(e.target.value)}
-
             />
           </div>
         </div>
 
         {/* Table */}
-        {modifiedComments && <DashboardTable comments={modifiedComments} />}
+        <DashboardTable comments={comments} />
 
         {/* End */}
       </div>
