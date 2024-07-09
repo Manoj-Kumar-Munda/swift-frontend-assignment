@@ -6,21 +6,19 @@ import { sort } from "../helpers/helpers";
 const DashboardTable = ({ comments }: { comments: IComment[] }) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [filteredComments, setFilteredComments] = useState(comments);
-  const [pageNumber, setPageNumber] = useState("1");
-  const [pageSize, setPageSize] = useState("10");
+  // const [pageNumber, setPageNumber] = useState("1");
+  // const [pageSize, setPageSize] = useState("10");
   const [sortComments, setSortComments] = useState({
     sortBy: "",
     order: "",
   });
+  const pageNumber = searchParams.get("page") || "1";
+  const pageSize = searchParams.get("limit") || "10";
 
   useEffect(() => {
-    setPageNumber(searchParams.get("page") || "1");
-    setPageSize(searchParams.get("limit") || "10");
-    setSortComments(() => {
-      return {
-        sortBy: searchParams.get("sortBy") || "",
-        order: searchParams.get("order") || "",
-      };
+    setSortComments({
+      sortBy: searchParams.get("sortBy") || "",
+      order: searchParams.get("order") || "",
     });
   }, [searchParams]);
 
@@ -95,18 +93,20 @@ const DashboardTable = ({ comments }: { comments: IComment[] }) => {
 
           <div className="flex">
             {filteredComments &&
-              new Array(filteredComments.length / +pageSize).fill(0).map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => {
-                    searchParams.set("page", `${index + 1}`);
-                    setSearchParams(searchParams);
-                  }}
-                  className="py-2 px-1"
-                >
-                  {index + 1}
-                </button>
-              ))}
+              new Array(filteredComments.length / +pageSize)
+                .fill(0)
+                .map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => {
+                      searchParams.set("page", `${index + 1}`);
+                      setSearchParams(searchParams);
+                    }}
+                    className="py-2 px-1"
+                  >
+                    {index + 1}
+                  </button>
+                ))}
           </div>
         </div>
       </div>
